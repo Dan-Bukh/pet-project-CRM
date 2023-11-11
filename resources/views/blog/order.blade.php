@@ -2,7 +2,7 @@
 @section('main')
 <div class="container">
     <main class="form-signin w-100 m-auto">
-        <a href="{{ route('blog', ['id' => ($id * 1024)]) }}">Вернуться к профилю</a>   
+        <a href="{{ route('blog', ['id' => $id]) }}">Вернуться к профилю</a>   
         <div class="d-flex justify-content-center row">
             <div class="col-lg-4 col-md-4 col-sm-9">
                 <form action="{{ route('blog.order.store') }}" method="POST">
@@ -14,11 +14,11 @@
                             </div>
                         @enderror
                     <h1 class="h3 mt-5 mb-3 fw-normal">Запись на прием</h1>
-                    <input name="id" type="hidden" class="form-control" value="{{ $user[0]['id'] }}">
-                    <input name="supplier_name" type="hidden" class="form-control" value="{{ $user[0]['name'] }}">
-                    <input name="speciality" type="hidden" class="form-control" value="{{ $user[0]['status'] }}">
+                    <input name="id" type="hidden" class="form-control" value="{{ $user->value('id') }}">
+                    <input name="supplier_name" type="hidden" class="form-control" value="{{ $user->value('name') }}">
+                    <input name="speciality" type="hidden" class="form-control" value="{{ $user->value('status') }}">
                     <div class="form-floating mb-3">
-                        <input class="form-control bg-primary-subtle" id="floatingInput" value="{{ $user[0]['name'] }}" disabled>
+                        <input class="form-control bg-primary-subtle" id="floatingInput" value="{{ $user->value('name') }}" disabled>
                     </div>
                         @error('FIO')
                             <p class="text-danger m-0">{{ $message }}</p>

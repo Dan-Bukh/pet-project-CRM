@@ -2,34 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DestroyPostRequest;
+use App\Http\Requests\IndexUserRequest;
+use App\Http\Requests\OrderCustomerRequest;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Customer;
 use App\Models\Post;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    public function index(Request $request) 
+    public function index(IndexUserRequest $request) 
     {
-        $validated = $request->validate([
-            'id' => ['string'],
-        ]);
-
         $user = auth('web')->user();
-
-        
-
+        $user_name = null;
         if($request->has('id')) {
-            $hash = $validated['id'] / 1024;
-            $user_name = User::query()->where('id', $hash)->get(['name', 'status']);
-            if($user_name->contains(0)) {
-                $posts = Post::query()->where('supplier_id', $hash)->get(['id', 'title', 'created_at']);
-                return view('blog.index', compact('user', 'user_name', 'posts', 'hash'));
+            $user_name = User::query()->where('id', $request['id'])->get(['id','name', 'status']);
+            if($user_name->containsOneItem()) {
+                $posts = Post::query()->where('supplier_id', $request['id'])->get(['id', 'title', 'created_at']);
+                return view('blog.index', compact('user', 'user_name', 'posts'));
             }
         }
         
-        return view('blog.index', compact('user'));
+        return view('blog.index', compact('user', 'user_name'));
     }
 
     public function show($post) 
@@ -50,32 +47,22 @@ class BlogController extends Controller
         return view('blog.order', compact('id' ,'user'));
     }
 
-    public function order_store(Request $request) 
+    public function order_store(OrderCustomerRequest $request) 
     {
-        $validated = $request->validate([
-            "id" => ['required' ,'string', 'max:40'],
-            "supplier_name" => ['required' ,'string', 'max:40'],
-            "speciality" => ['required' ,'string', 'max:40'],
-            "name" => ['required' ,'string', 'max:40'],
-            "email" => ['required' ,'string', 'email', 'max:50'],
-            "number" => ['required' ,'string', 'max:15'],
-            "time_order" => ['required' ,'string', 'max:10'],
-        ]);
-
-        if(validate_fio($validated['name'])) {
+        if(validate_fio($request['name'])) {
             return back()->withErrors(['FIO' => 'В графе должно быть заполнено Ф.И.О']);
         };
         $time = Carbon::now();
 
         Customer::query()->insertOrIgnore([
-            'supplier_id' => $validated['id'],
-            'supplier_name' => $validated['supplier_name'],
-            'speciality' => $validated['speciality'],
-            'customer_name' => $validated['name'],
-            'email' => $validated['email'],
-            'number' => $validated['number'],
+            'supplier_id' => $request['id'],
+            'supplier_name' => $request['supplier_name'],
+            'speciality' => $request['speciality'],
+            'customer_name' => $request['name'],
+            'email' => $request['email'],
+            'number' => $request['number'],
             'comment' => 'В Ожидании Подтверждения',
-            'time' => Carbon::create($time->format('Y'), $time->format('m'), ($time->format('d') + 1), $validated['time_order'], 00, 00),
+            'time' => Carbon::create($time->format('Y'), $time->format('m'), ($time->format('d') + 1), $request['time_order'], 00, 00),
             'created_at' => $time,
             'updated_at' => $time,
         ]);
@@ -87,62 +74,49 @@ class BlogController extends Controller
     {
 
         $user = auth('web')->user();
- 
+
         return view('blog.create', compact('user'));
     }
 
-    public function post_store(Request $request) 
+    public function post_store(StorePostRequest $request) 
     {
-
-        $validated = $request->validate([
-            'id' => ['required' ,'string', 'max:40'],
-            'name' => ['required' ,'string', 'max:40'],
-            'title' => ['required' ,'string', 'max:1000'],
-            'content' => ['required' ,'string'],
-        ]);
-        
-        Post::query()->insertOrIgnore([
-            'supplier_id' => $validated['id'],
-            'supplier_name' => $validated['name'],
-            'title' => $validated['title'],
-            'content' => $validated['content'],
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
-
-        return back()->withErrors(['success' => 'Пост создан успешно.']);
+        if(auth('web')->id() == $request['id']) {
+            Post::query()->insertOrIgnore([
+                'supplier_id' => $request['id'],
+                'supplier_name' => $request['name'],
+                'title' => $request['title'],
+                'content' => $request['content'],
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+    
+            return back()->withErrors(['success' => 'Пост создан успешно.']);
+        }
+        return back()->withErrors(['success' => 'Что то пошло не так.']);
     }
 
     public function post_edit($id) {
         $post = Post::query()->where('id', $id)->get();
         $user = auth('web')->user();
-        if($post[0]['supplier_id'] == $user->id) {
+        if(($post[0]['supplier_id'] ?? null) == $user->id) {
             return view('blog.edit', compact('user', 'post'));
         } else {
             abort(404);
         }
     }
 
-    public function post_update(Request $request, $id) {
-        $validated = $request->validate([
-            'title' => ['required' ,'string', 'max:1000'],
-            'content' => ['required' ,'string'],
-        ]);
-        
+    public function post_update(UpdatePostRequest $request, $id) {
         Post::query()->where('id', $id)->update([
-            'title' => $validated['title'],
-            'content' => $validated['content'],
+            'title' => $request['title'],
+            'content' => $request['content'],
         ]);
 
         return back()->withErrors(['success' => 'Пост изменен успешно.']);
     }
 
-    public function post_destroy(Request $request, $id) 
+    public function post_destroy(DestroyPostRequest $request, $id) 
     {
-        $validated = $request->validate([
-            'id' => ['required' ,'string', 'max:40'],
-        ]);
         Post::query()->where('id', $id)->delete();
-        return redirect()->route('blog', ['id' => ($validated['id'] * 1024)]);
+        return redirect()->route('blog', ['id' => $request['id']]);
     }
 }

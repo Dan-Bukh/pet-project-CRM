@@ -33,7 +33,7 @@
                   {{ $message }}
               </div>
             @enderror
-          <a href="{{ route('blog', ['id' => ($user['id'] * 1024)]) }}">Обратно</a>
+          <a href="{{ route('blog', ['id' => $user['id']]) }}">Обратно</a>
           <h3 class="mb-3">{{'Автор: '. $user['name'] ?? ''}}</h3>
           <input name="id" type="hidden" class="form-control" value="{{ $user['id'] }}">
           <input name="name" type="hidden" class="form-control" value="{{ $user['name'] }}">

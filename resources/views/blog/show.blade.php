@@ -25,10 +25,10 @@
 <div class="container-fluid p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
   <div class="row">
     <div class="col-10 mx-auto">
-      <a href="{{ route('blog', ['id' => ($post[0]['supplier_id'] * 1024)]) }}">Обратно</a>
-      <h3 class="mb-3">{{'Автор: '. $post[0]['supplier_name'] ?? ''}}</h3>
-      <h1>{{$post[0]['title'] ?? 'Пост не найден....'}}</h1>
-      <p>{{$post[0]['content'] ?? ''}}</p>
+      <a href="{{ route('blog', ['id' => $post->value('supplier_id')]) }}">Обратно</a>
+      <h3 class="mb-3">{{'Автор: '. $post->value('supplier_name') ?? ''}}</h3>
+      <h1>{{$post->value('title') ?? 'Пост не найден....'}}</h1>
+      <p>{{$post->value('content') ?? ''}}</p>
     </div>
   </div>
 </div>

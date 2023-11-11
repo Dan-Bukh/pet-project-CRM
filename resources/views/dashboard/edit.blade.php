@@ -28,7 +28,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link d-flex align-items-center gap-2 active" href="{{ route('blog', ['id' => ($customer[0]['supplier_id'] * 1024)] ) }}">
+                <a class="nav-link d-flex align-items-center gap-2 active" href="{{ route('blog', ['id' => $customer->value('supplier_id')] ) }}">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-heading" viewBox="0 0 16 16">
                     <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
                     <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0-5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-1z"/>
@@ -53,7 +53,7 @@
       </div>
   
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <h2>Клиенты: {{$customer[0]['supplier_name'] ?? ''}}</h2>
+        <h2>Клиенты: {{$customer->value('supplier_name') ?? ''}}</h2>
         <div class="table-responsive small">
           <table class="table table-striped table-sm">
             <thead>
@@ -70,33 +70,33 @@
             </thead>
             <tbody>
                 <tr>
-                    <form action="{{ route('dashboard.update', $customer[0]['id']) }}" method="POST">
+                    <form action="{{ route('dashboard.update', $customer->value('id')) }}" method="POST">
                     @method('PUT')
                     @csrf
-                    <td>{{$customer[0]['id']}}</td>
-                    <td>{{$customer[0]['supplier_name']}}</td>
-                    <td>{{$customer[0]['speciality']}}</td>
-                    <td><input name="customer_name" class="form-control @error('FIO') is-invalid @enderror" value="{{$customer[0]['customer_name']}}">
+                    <td>{{$customer->value('id')}}</td>
+                    <td>{{$customer->value('supplier_name')}}</td>
+                    <td>{{$customer->value('speciality')}}</td>
+                    <td><input name="customer_name" class="form-control @error('FIO') is-invalid @enderror" value="{{$customer->value('customer_name')}}">
                       @error('FIO')
                       <p class="text-danger m-0">{{ $message }}</p>
                       @enderror</td>
 
-                    <td><input name="email" class="form-control @error('email') is-invalid @enderror" value="{{$customer[0]['email']}}">
+                    <td><input name="email" class="form-control @error('email') is-invalid @enderror" value="{{$customer->value('email')}}">
                       @error('email')
                       <p class="text-danger m-0">{{ $message }}</p>
                       @enderror</td>
 
-                    <td><input name="number" class="form-control @error('number') is-invalid @enderror" value="{{$customer[0]['number']}}">
+                    <td><input name="number" class="form-control @error('number') is-invalid @enderror" value="{{$customer->value('number')}}">
                       @error('number')
                       <p class="text-danger m-0">{{ $message }}</p>
                       @enderror</td>
 
-                      <td><input name="comment" class="form-control @error('comment') is-invalid @enderror" value="{{$customer[0]['comment']}}">
+                      <td><input name="comment" class="form-control @error('comment') is-invalid @enderror" value="{{$customer->value('comment')}}">
                         @error('comment')
                         <p class="text-danger m-0">{{ $message }}</p>
                         @enderror</td>
 
-                    <td><input name="time" class="form-control @error('time') is-invalid @enderror" value="{{$customer[0]['time']}}">
+                    <td><input name="time" class="form-control @error('time') is-invalid @enderror" value="{{$customer->value('time')}}">
                       @error('time')
                       <p class="text-danger m-0">Время должно соответствовать формату Г.м.д Ч.м.с</p>
                       @enderror</td>
@@ -105,7 +105,7 @@
                 </tr>
             </tbody>
           </table>
-          <form action="{{ route('dashboard.destroy', $customer[0]['id']) }}" method="POST">
+          <form action="{{ route('dashboard.destroy', $customer->value('id')) }}" method="POST">
             @method('DELETE')
             @csrf
             <button class="btn btn-danger" href="">Удалить</button>

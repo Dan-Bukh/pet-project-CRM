@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
@@ -13,26 +14,19 @@ class LoginController extends Controller
         return view('auth.register');
     }
 
-    public function register_store(Request $request) 
+    public function register_store(RegisterUserRequest $request) 
     {
-        $validated = $request->validate([
-        'name' => ['required' ,'string', 'max:40'],
-        'status' => ['required' ,'string', 'max:50'],
-        'email' => ['required' ,'string', 'email', 'max:50', 'unique:users,email'],
-        'password' => ['required' ,'string', 'max:50', 'confirmed'],
-        ]);
-
-        if(validate_fio($validated['name'])) {
+        if(validate_fio($request['name'])) {
             //return redirect(route('register'))->withErrors(['FIO' => 'В графе должно быть заполнено Ф.И.О']);
             return back()->withErrors(['FIO' => 'В графе должно быть заполнено Ф.И.О']);
         };
         
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name' => $request['name'],
+            'email' => $request['email'],
             'email_verified_at' => now(),
-            'status' => $validated['status'],
-            'password' => Hash::make($validated['password']),
+            'status' => $request['status'],
+            'password' => Hash::make($request['password']),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -50,16 +44,11 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    public function login_store(Request $request) 
+    public function login_store(LoginUserRequest $request) 
     {
-        $validated = $request->validate([
-        'email' => ['required' ,'string', 'email', 'max:50'],
-        'password' => ['required' ,'string', 'max:50'],
-        ]);
-
-        if(auth('web')->attempt($validated)){
+        if(auth('web')->attempt($request->validated())){
             $user = auth('web')->user();
-            return redirect(route('blog', ['id' => ($user['id'] * 1024)] ));
+            return redirect(route('blog', ['id' => $user['id']] ));
         }
 
         return redirect(route('login'))->withErrors(['email' => 'Неправильное Имя пользователя или Пароль']);

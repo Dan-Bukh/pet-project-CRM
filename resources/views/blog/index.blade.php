@@ -21,17 +21,16 @@
 @endsection
 
 @section('main')
-
 <main class="container">
 <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
   <div class="row">
     <div class="col-lg-8 px-0">
-      <h1 class="display-4 fst-italic">{{$user_name[0]['name'] ?? 'Сайт ведения учета своих клиентов'}}</h1>
-      <p class="lead my-3">{{ $user_name[0]['status'] ?? 'Управляйте своими клиентами быстро и качественно'}}</p>
+      <h1 class="display-4 fst-italic">{{ $user_name == null ? 'Сайт ведения учета своих клиентов' : $user_name->value('name') }}</h1>
+      <p class="lead my-3">{{ $user_name == null ? 'Управляйте своими клиентами быстро и качественно' : $user_name->value('status')}}</p>
     </div>
     @if($user_name ?? false)
     <div class="col-lg-4 mt-5">
-      <a href="{{ route('blog.order', $hash) }}" type="button" class="btn btn-primary btn-lg d-flex justify-content-center">Записаться на прием</a>
+      <a href="{{ route('blog.order', $user_name->value('id')) }}" type="button" class="btn btn-primary btn-lg d-flex justify-content-center">Записаться на прием</a>
     </div>
     @endif
   </div>
@@ -58,7 +57,7 @@
         <div class="col-sm-10 col-md-6">
           @foreach($posts as $post)
 
-              @if(($user['id'] ?? null) == $hash)
+              @if(($user['id'] ?? null) == $user_name->value('id'))
                 <a href="{{ route('blog.edit', $post->id) }}">
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -79,7 +78,7 @@
           @endforeach
         </div>
 
-        @if(($user['id'] ?? null) == $hash)
+        @if(($user['id'] ?? null) == $user_name->value('id'))
           <div class="col-4 d-flex justify-content-start">
             <a href="{{ route('blog.create') }}">
               <svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">

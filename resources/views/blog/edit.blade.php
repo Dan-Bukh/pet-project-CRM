@@ -25,7 +25,7 @@
 <div class="container-fluid p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
   <div class="row">
     <div class="col-10 mx-auto">
-        <form action="{{ route('blog.update', $post[0]['id']) }}" method="POST">
+        <form action="{{ route('blog.update', $post->value('id')) }}" method="POST">
           @method('PUT')
           @csrf
             @error('success')
@@ -33,22 +33,22 @@
                   {{ $message }}
               </div>
             @enderror
-          <a href="{{ route('blog', ['id' => ($user['id'] * 1024)]) }}">Обратно</a>
+          <a href="{{ route('blog', ['id' => $user['id']]) }}">Обратно</a>
           <h3 class="mb-3">{{'Автор: '. $user['name'] ?? ''}}</h3>
           <div class="form-floating mb-3">
-            <input name="title" class="form-control" id="floatingInput" value="{{ $post[0]['title'] }}">
+            <input name="title" class="form-control" id="floatingInput" value="{{ $post->value('title') }}">
             <label for="floatingInput">Заголовок</label>
           </div>
 
           <div class="form-floating mb-3">
-            <textarea name="content" class="form-control" id="floatingTextarea2" style="height: 220px">{{ $post[0]['content'] }}</textarea>
+            <textarea name="content" class="form-control" id="floatingTextarea2" style="height: 220px">{{ $post->value('content') }}</textarea>
             <label for="floatingTextarea2">Контент</label>
           </div>
 
           <button class="btn btn-primary w-30 mt-2 py-2" type="submit">Изменить</button>
           
       </form>
-      <form action="{{ route('blog.destroy', $post[0]['id']) }}" method="POST">
+      <form action="{{ route('blog.destroy', $post->value('id')) }}" method="POST">
         @method('DELETE')
         @csrf
         <input name="id" type="hidden" class="form-control" value="{{ $user['id'] }}">
