@@ -18,5 +18,7 @@ class Customer extends Model
         'number',
         'comment',
         'time',
+        'created_at',
+        'updated_at',
     ];
 }

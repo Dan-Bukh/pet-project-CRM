@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +19,7 @@ Route::redirect('/', '/blog');
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/blog/create', [BlogController::class, 'post_create'])->name('blog.create');
     Route::post('/blog/create_store', [BlogController::class, 'post_store'])->name('blog.store');
@@ -38,11 +38,11 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [LoginController::class, 'login'])->name('login');
-    Route::post('/login', [LoginController::class, 'login_store'])->name('login.store');
+    Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'login_store'])->name('login.store');
     
-    Route::get('/register', [LoginController::class, 'register'])->name('register');
-    Route::post('/register', [LoginController::class, 'register_store'])->name('register.store');
+    Route::get('/register', [AuthController::class, 'register'])->name('register');
+    Route::post('/register', [AuthController::class, 'register_store'])->name('register.store');
 });
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');

@@ -14,5 +14,7 @@ class Post extends Model
         'supplier_name',
         'title',
         'content',
+        'created_at',
+        'updated_at',
     ];
 }

@@ -25,10 +25,10 @@
 <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
   <div class="row">
     <div class="col-lg-8 px-0">
-      <h1 class="display-4 fst-italic">{{ $user_name == null ? 'Сайт ведения учета своих клиентов' : $user_name->value('name') }}</h1>
-      <p class="lead my-3">{{ $user_name == null ? 'Управляйте своими клиентами быстро и качественно' : $user_name->value('status')}}</p>
+      <h1 class="display-4 fst-italic">{{ !$user_name ? 'Сайт ведения учета своих клиентов' : $user_name->value('name') }}</h1>
+      <p class="lead my-3">{{ !$user_name ? 'Управляйте своими клиентами быстро и качественно' : $user_name->value('status')}}</p>
     </div>
-    @if($user_name ?? false)
+    @if($user_name)
     <div class="col-lg-4 mt-5">
       <a href="{{ route('blog.order', $user_name->value('id')) }}" type="button" class="btn btn-primary btn-lg d-flex justify-content-center">Записаться на прием</a>
     </div>
@@ -38,7 +38,7 @@
 </div>
 
 <div class="row mb-2">
-  @if($user_name ?? false)
+  @if($user_name)
     {{-- @for($i=1;$i<2;$i++)
       <div class="col-md-6">
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-lg h-md-250 position-relative">
