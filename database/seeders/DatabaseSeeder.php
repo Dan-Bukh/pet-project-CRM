@@ -102,21 +102,43 @@ class DatabaseSeeder extends Seeder
                 ]
             ];
 
-        for($i = 1; $i < 30; $i++) {
+            \App\Models\User::factory()->create([
+                'id' => '1',
+                'name' => 'Королев Алексей Игоревич',
+                'email' => '123@example.com',
+                'email_verified_at' => now(),
+                'status' => 'Стоматолог',
+                'password' => Hash::make('123'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            \App\Models\User::factory()->create([
+                'id' => '2',
+                'name' => 'Соколов Вадим Всеволодович',
+                'email' => '1234@example.com',
+                'email_verified_at' => now(),
+                'status' => 'Невролог',
+                'password' => Hash::make('1234'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+        for($i = 1; $i < 50; $i++) {
             $full_name = 
             $last_name[rand(0, (count($last_name)-1))]. ' '.
             $first_name[rand(0, (count($first_name)-1))]. ' '.
             $otchestvo[rand(0, (count($otchestvo)-1))];
-            $time = Carbon::create(2023, 9, rand(26, 29), rand(8, 19), rand(1, 60), 00);
+            $time = Carbon::create(Carbon::now()->format('Y'), Carbon::now()->format('m'), rand(1, 29), rand(8, 19), rand(1, 60), 00);
             $rand_supplier = $supplier[rand(0,(count($supplier) - 1))];
 
-            Customer::query()->insertOrIgnore([
+            Customer::create([
                 'supplier_id' => $rand_supplier[0],
                 'supplier_name' => $rand_supplier[1],
                 'speciality' => $rand_supplier[2],
                 'customer_name' => $full_name,
                 'email' => "example-example@example.com",
-                'number' => '+79686112007',
+                'number' => '+79'. rand(100000000, 999999999),
                 'comment' => 'В Ожидании Подтверждения',
                 'time' => $time,
                 'created_at' => Carbon::now(),
@@ -124,15 +146,6 @@ class DatabaseSeeder extends Seeder
             ]);
         }
         
-        // \App\Models\User::factory()->create([
-            
-        //     'name' => 'Henry Mann',
-        //     'email' => 'henry@mail.com',
-        //     'email_verified_at' => now(),
-        //     'status' => 'admin',
-        //     'password' => Hash::make('123'),
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
+
     }
 }
